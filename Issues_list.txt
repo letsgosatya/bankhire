@@ -1,0 +1,4 @@
+below are issue fix one by one without distubing which is already working.
+1. continue on whatsapp nothing getting blank page after clikcing..
+2.  when click on request a call from hr it is bringing a popup link open 360 secure browser? is it connect what can be next should be 
+when i click ok it bringing a new page with balnk

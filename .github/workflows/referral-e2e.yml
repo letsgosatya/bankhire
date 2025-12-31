@@ -1,0 +1,75 @@
+name: Referral E2E
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: bankhire
+          POSTGRES_USER: bankhire_user
+          POSTGRES_PASSWORD: Village@1234
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: bankhire
+      DB_USER: bankhire_user
+      DB_PASS: Village@1234
+      JWT_SECRET: bankhire_jwt_secret_2025
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        run: |
+          cd bankhire
+          npm ci
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..30}; do pg_isready -h localhost -p 5432 && break || sleep 1; done
+
+      - name: Seed database
+        run: |
+          cd bankhire
+          node seed.js
+
+      - name: Start backend
+        run: |
+          cd bankhire
+          npm start &
+          sleep 2
+
+      - name: Run E2E
+        run: |
+          cd bankhire
+          npm run test:e2e
+        continue-on-error: false
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: referral-artifacts
+          path: |
+            bankhire/tools/referral_test_result.json
+            bankhire/tools/referral_db_dump.json
+            bankhire/tools/referral_db_seed_verify.json

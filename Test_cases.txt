@@ -1,0 +1,8 @@
+Admin — 9999999999 — test admin features (job management, applications) 🔧
+Manager — 8888888888 — test posting jobs and manager flows 🧑‍💼
+Candidate 1 — 8593986894 — comprehensive candidate with resume, multiple applications & referrals (recommended first test) ✅
+Candidate 2 — 7777777777 — active referrer / earnings checks 💰
+Candidate 3 — 6666666666 — candidate without resume — test upload flow 📄
+Candidate 4 — 4444444444 — high earner/referrals checks 🏆
+Candidate 5 — 2222222222 — referrals & joined checks ✔️
+(More seeded candidates) — 1111111111, 0000000000, 9999999990, 8888888880, 7777777770, 6666666660, 5555555550 etc. — used for various scenarios in seed data

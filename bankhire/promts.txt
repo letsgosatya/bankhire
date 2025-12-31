@@ -1,0 +1,342 @@
+You are acting as a senior full-stack engineer and product architect.
+
+Project Name: BankHire
+Domain: Bank-specific hiring & resume collection platform
+Frontend: React (Web) + Expo (Mobile)
+Backend: Node.js + Express
+
+====================================================
+CURRENT STATUS (IMPORTANT – READ CAREFULLY)
+====================================================
+- Application is implemented ONLY up to basic login / language selection / initial candidate entry
+- Resume upload functionality is NOT implemented yet
+- Do NOT refactor or break any existing pre-resume flow
+- All work must START by implementing the Resume Upload feature
+- Everything AFTER resume upload must be newly built
+
+====================================================
+STEP 1: RESUME UPLOAD (START HERE)
+====================================================
+
+Implement Resume Upload feature with production quality:
+
+Supported formats:
+- PDF
+- DOC / DOCX
+
+Upload options:
+- File picker (Web + Mobile)
+- Camera scan (Mobile)
+- Optional WhatsApp resume upload (future-safe structure)
+
+On successful upload:
+- Validate file type & size
+- Show clear success confirmation
+- Mark resumeUploaded = true in backend
+
+Backend must store immediately:
+- Candidate mobile number
+- Selected language (English / Kannada / Telugu)
+- Resume uploaded flag
+- Resume file reference
+- Date & time
+- Job role (if selected)
+- Location (default Bangalore)
+
+⚠️ IMPORTANT:
+Even if the user exits the app after upload, the above data MUST be saved.
+
+====================================================
+STEP 2: POST–RESUME CONFIRMATION SCREEN
+====================================================
+
+Navigate to a new screen after successful upload:
+
+Title:
+"Resume Received Successfully"
+
+Show trust messages (language-aware):
+- Your profile is securely shared with bank HR
+- No spam, no third-party sharing
+- Local bank hiring team (Bangalore)
+- Language-specific HR support available
+
+UI must look:
+- Clean
+- Friendly
+- Professional (banking-grade)
+
+====================================================
+LANGUAGE HANDLING (CRITICAL – MUST FIX)
+====================================================
+
+Ensure:
+- Selected language persists across ALL screens
+- Language is saved in backend with candidate profile
+- React renders ONLY string values
+- No objects are rendered directly in JSX
+- Fix and prevent:
+  "Objects are not valid as a React child" errors
+
+Implement:
+- Proper i18n key-value string usage
+- Safe fallback language (English)
+
+====================================================
+STEP 3: NEXT ACTION OPTIONS (POST-RESUME)
+====================================================
+
+Show 3 clear buttons (language-aware):
+
+A. Continue on WhatsApp  
+B. Request a Call from HR  
+C. Check Job Eligibility & Next Steps  
+
+Buttons must be:
+- Clearly visible
+- Mobile friendly
+- Fully functional
+
+====================================================
+STEP 4: WHATSAPP FLOW
+====================================================
+
+On clicking "Continue on WhatsApp":
+- Open WhatsApp with a predefined message
+- Message must include:
+  • Candidate name (if available)
+  • Job role
+  • Resume submission confirmation
+  • Selected language
+
+Message must be generated dynamically
+and translated into the selected language.
+
+Backend must mark:
+- whatsappClicked = true
+
+====================================================
+STEP 5: CALL REQUEST FLOW
+====================================================
+
+On clicking "Request a Call from HR":
+- One-click action (no long forms)
+- Backend marks candidate status as:
+  CALL_REQUESTED
+
+Admin / HR must see:
+- Candidate preferred language
+- Resume uploaded status
+
+====================================================
+STEP 6: JOB ELIGIBILITY & TRANSPARENCY
+====================================================
+
+Eligibility screen should collect:
+- Age
+- Education level
+- Experience (if any)
+- City (default Bangalore)
+
+Show result:
+- Eligible
+- Review Required
+
+Also show:
+- HR will contact you
+- Expected response timeline
+- No guarantees or fake promises
+
+====================================================
+STEP 7: UNIQUE & TRUST-BUILDING FEATURES
+====================================================
+
+Add standout features:
+- AI voice explanation of job role & hiring process
+  (language-aware: EN / KN / TE)
+- “What happens next?” visual hiring timeline
+- Local language HR support badge
+- Beginner-friendly FAQ
+- Resume safety & privacy explanation
+
+====================================================
+STEP 8: ADMIN & HR DASHBOARD ENHANCEMENTS
+====================================================
+
+Every resume upload creates a lead automatically.
+
+Admin must see:
+- Candidate name
+- Mobile number
+- Language preference
+- Job role
+- Resume uploaded (Yes / No)
+- WhatsApp clicked (Yes / No)
+- Call requested (Yes / No)
+- Status:
+  new / contacted / shortlisted / rejected / joined
+
+Security:
+- Data visible only to admin / authorized HR
+- No export or misuse by executives
+
+====================================================
+STEP 9: UI / UX QUALITY (NON-NEGOTIABLE)
+====================================================
+
+Ensure:
+- Mobile-first design
+- Clean layouts for non-technical users
+- Consistent typography & spacing
+- Professional OTP & post-resume screens
+- No broken buttons or layout issues
+
+Benchmark quality against:
+- BFSI onboarding apps
+- Modern hiring platforms
+
+====================================================
+STEP 10: TESTING & DELIVERY
+====================================================
+
+Thoroughly test:
+- Resume upload
+- Language persistence
+- WhatsApp flow
+- Call request flow
+- Admin visibility
+- Web + Mobile compatibility
+
+Final result must be:
+- Demo-ready
+- Production-ready
+- Stable
+- Trustworthy
+- Easy for HR teams to use
+
+Proceed step-by-step.
+Document fixes if required.
+Do NOT break existing functionality.
+
+-----------------
+updated prompt here 
+----------------
+
+Continue from the existing BankHire codebase.
+
+IMPORTANT:
+- DO NOT remove or refactor existing referral logic
+- ONLY extend referral functionality
+- All additions must be optional and backward compatible
+
+=====================================
+REFERRAL SYSTEM – MISSING FEATURES
+=====================================
+
+-------------------------------------------------
+1) REFERRAL LIMIT CONTROL
+-------------------------------------------------
+
+Add to AppSettings table:
+- maxReferralsPerDay
+- maxReferralsPerMonth
+
+Enforce:
+- Employee cannot exceed referral limits
+- Return friendly error message if exceeded
+
+-------------------------------------------------
+2) REFERRAL WITHDRAW & HR REJECTION
+-------------------------------------------------
+
+Enhance Referral table by ADDING:
+- referralStatus (ACTIVE, WITHDRAWN, REJECTED, EXPIRED)
+- rejectionReason (nullable)
+- rejectedBy (HR / ADMIN)
+
+APIs:
+- POST /referral/withdraw (EMPLOYEE)
+- POST /referral/reject (HR / ADMIN)
+
+Withdrawn or rejected referrals:
+- Are not eligible for payout
+- Are visible in referral history
+
+-------------------------------------------------
+3) MULTI-REFERRER CONFLICT HANDLING
+-------------------------------------------------
+
+Rule:
+- Candidate mobile number is unique for active referrals per job
+
+Logic:
+- First approved referral is valid
+- Subsequent referrals for same mobile + job:
+    → auto-marked as REJECTED
+    → reason: "Already referred"
+
+-------------------------------------------------
+4) REFERRAL EXPIRY
+-------------------------------------------------
+
+Add to Referral table:
+- expiresAt (timestamp)
+
+Logic:
+- Default expiry: 15 or 30 days (from AppSettings)
+- If candidate does not apply before expiry:
+    → referralStatus = EXPIRED
+    → not eligible for payout
+
+-------------------------------------------------
+5) BANK / ROLE BASED REFERRAL AMOUNT
+-------------------------------------------------
+
+Add new table:
+ReferralRewardConfig
+- bankName
+- jobRole
+- minExperience
+- rewardAmount
+
+Referral earning calculation:
+- Dynamically fetch rewardAmount
+- Do not use hardcoded values
+
+-------------------------------------------------
+6) REFERRAL REJECTION TRANSPARENCY
+-------------------------------------------------
+
+Expose referral rejection reason to employee:
+- Visible in "My Referrals" screen
+- Read-only
+- Audit-safe
+
+-------------------------------------------------
+7) REFERRAL SOURCE OVERRIDE (HR SAFETY)
+-------------------------------------------------
+
+Allow HR/Admin to mark referral as:
+- NOT_ELIGIBLE
+
+Reasons:
+- Vendor hire
+- Walk-in
+- Internal transfer
+- Duplicate resume
+
+Such referrals:
+- Are excluded from earnings
+- Still visible for transparency
+
+-------------------------------------------------
+FINAL SAFETY RULES
+-------------------------------------------------
+
+- Existing referrals must continue to work
+- New logic applies only to new referrals
+- Use nullable columns for new fields
+- No breaking API changes
+- Add clear comments
+
+Implement backend and frontend changes accordingly.

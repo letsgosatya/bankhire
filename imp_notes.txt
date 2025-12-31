@@ -1,0 +1,33 @@
+Invoke-WebRequest -Uri http://localhost:3001/auth/send-otp -Method POST -Body '{"mobile":"1234567890"}' -ContentType 'application/json' | Select-Object -ExpandProperty Content
+
+cd c:\Satya_RealtimeProjects\BankHire\bankhire ; npm install multer
+
+cd c:\Satya_RealtimeProjects\BankHire\bankhire-mobile ; npx expo install expo-document-picker expo-image-picker
+
+npx expo install @react-native-picker/picker
+
+cd c:\Satya_RealtimeProjects\BankHire\bankhire ; npm run dev
+
+cd c:\Satya_RealtimeProjects\BankHire\bankhire-mobile ; npx expo install --fix
+
+cd c:\Satya_RealtimeProjects\BankHire\bankhire-mobile ; npx expo install expo-linking
+
+Remove-Item -Recurse -Force node_modules
+
+npm install
+
+npx expo start --clear
+
+cd c:\Satya_RealtimeProjects\BankHire\bankhire-web ; npx create-react-app . --template typescript
+
+You can find a list of up-to-date React frameworks on react.devFor more info see:https://react.dev/link/cra
+
+This error message will only be shown once per install.        
+
+Creating a new React app in C:\Satya_RealtimeProjects\BankHire\bankhire-web.
+
+Installing packages. This might take a couple of minutes.
+Installing react, react-dom, and react-scripts with cra-template-typescript..
+
+
+
