@@ -69,7 +69,22 @@ const verifyOtp = async (req, res) => {
     console.log('Token generated, sending response');
     res.json({ token, user: { id: user.id, mobile: user.mobile, role: user.role, resumeUploaded: user.resumeUploaded } });
   } catch (err) {
-    console.log('Error in verifyOtp:', err.message);
+    console.log('Error in verifyOtp:', err && err.stack ? err.stack : err);
+    try {
+      const logDir = path.join(__dirname, '..', '..', 'logs');
+      if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+      const logFile = path.join(logDir, 'verify_errors.log');
+      const details = {
+        message: err && err.message,
+        name: err && err.name,
+        parentMessage: err && err.parent && err.parent.message,
+        sql: err && err.sql,
+        stack: err && err.stack
+      };
+      fs.appendFileSync(logFile, `${new Date().toISOString()} - Error verifying mobile ${mobile}: ${JSON.stringify(details)}\n`);
+    } catch (logErr) {
+      console.error('Failed to write verify error log', logErr);
+    }
     res.status(500).json({ error: 'Verification failed' });
   }
 };
@@ -91,9 +106,21 @@ const uploadResume = async (req, res) => {
     user.resumeFileReference = req.file.path;
     if (req.body.jobRole) user.jobRole = req.body.jobRole;
     if (req.body.location) user.location = req.body.location;
+
+    // Parse resume to extract simple fields (email, name, skills) when possible
+    try{
+      const { parseResume } = require('../utils/resumeParser');
+      const parsed = await parseResume(req.file.path);
+      if(parsed.name) user.fullName = parsed.name;
+      if(parsed.email) user.email = parsed.email;
+      if(parsed.skills) user.skills = parsed.skills;
+    }catch(e){
+      console.log('Resume parsing failed or parser missing:', e.message || e);
+    }
+
     await user.save();
 
-    res.json({ message: 'Resume uploaded successfully', user: { id: user.id, mobile: user.mobile, role: user.role, resumeUploaded: user.resumeUploaded } });
+    res.json({ message: 'Resume uploaded successfully', user: { id: user.id, mobile: user.mobile, role: user.role, resumeUploaded: user.resumeUploaded, fullName: user.fullName, email: user.email } });
   } catch (err) {
     console.log('Error in uploadResume:', err);
     res.status(500).json({ error: err.message || 'Upload failed' });
@@ -122,4 +149,33 @@ const downloadResume = async (req, res) => {
   }
 };
 
-module.exports = { sendOtp, verifyOtp, uploadResume, downloadResume, upload };
+const getProfile = async (req, res) => {
+  try{
+    const user = await User.findByPk(req.user.id, { attributes: ['id','mobile','role','resumeUploaded','resumeFileReference','jobRole','location','fullName','email','skills'] });
+    if(!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ user });
+  }catch(e){
+    console.error('getProfile failed', e);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try{
+    const user = await User.findByPk(req.user.id);
+    if(!user) return res.status(404).json({ error: 'User not found' });
+    const { fullName, email, skills, jobRole, location } = req.body;
+    if(fullName !== undefined) user.fullName = fullName;
+    if(email !== undefined) user.email = email;
+    if(skills !== undefined) user.skills = skills;
+    if(jobRole !== undefined) user.jobRole = jobRole;
+    if(location !== undefined) user.location = location;
+    await user.save();
+    res.json({ message: 'Profile updated', user });
+  }catch(e){
+    console.error('updateProfile failed', e);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+};
+
+module.exports = { sendOtp, verifyOtp, uploadResume, downloadResume, upload, getProfile, updateProfile };

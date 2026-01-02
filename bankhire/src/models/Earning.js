@@ -19,6 +19,21 @@ const Earning = sequelize.define('Earning', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'REFERRAL'
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  // Link to the referral that generated this earning (if applicable)
+  referralId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: { model: 'Referrals', key: 'id' },
+  },
   status: {
     type: DataTypes.ENUM('PENDING', 'PAID'),
     allowNull: false,

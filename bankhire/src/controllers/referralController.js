@@ -33,8 +33,14 @@ const createReferral = async (req, res) => {
       return res.status(400).json({ error: `Monthly referral limit reached (${settings.maxReferralsPerMonth})` });
     }
 
-    // Check for existing active referral for same candidate+job
     const { Op } = require('sequelize');
+
+    // Normalize candidate fields and optional resume file handling
+    const candidateName = req.body.candidateName || null;
+    const candidateEmail = req.body.candidateEmail || null;
+    const resumeFile = req.file || null; // multer
+
+    // Check for existing active referral for same candidate+job
     const existingActive = await Referral.findOne({
       where: { candidateMobile, jobId, status: { [Op.in]: ['REFERRED','APPLIED'] } },
     });
@@ -43,12 +49,21 @@ const createReferral = async (req, res) => {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + (settings.defaultReferralExpiryDays || 30));
 
-    const referral = await Referral.create({
+    // Create referral record and store resume metadata if present
+    const referralData = {
       referrerId: req.user.id,
       candidateMobile,
       jobId,
       expiresAt,
-    });
+    };
+    if (candidateName) referralData.candidateName = candidateName;
+    if (candidateEmail) referralData.candidateEmail = candidateEmail;
+    if (resumeFile) {
+      referralData.resumeFileReference = resumeFile.path;
+      referralData.resumeUploaded = true;
+    }
+
+    const referral = await Referral.create(referralData);
 
     if (existingActive) {
       referral.status = 'REJECTED';
@@ -56,6 +71,21 @@ const createReferral = async (req, res) => {
       referral.rejectedBy = 'SYSTEM';
       await referral.save();
       return res.status(201).json({ message: 'Referral auto-rejected (already referred)', referral });
+    }
+
+    // If candidate user exists, update resume fields when a file was uploaded
+    try{
+      const [candidateUser, created] = await User.findOrCreate({ where: { mobile: candidateMobile }, defaults: { role: 'CANDIDATE' } });
+      if (resumeFile) {
+        candidateUser.resumeUploaded = true;
+        candidateUser.resumeFileReference = resumeFile.path;
+        if (candidateName) candidateUser.fullName = candidateName;
+        if (candidateEmail) candidateUser.email = candidateEmail;
+        await candidateUser.save();
+      }
+    }catch(e){
+      console.error('Failed to create/update candidate user record', e);
+      // non-fatal — don't block referral creation
     }
 
     res.status(201).json(referral);
@@ -133,7 +163,13 @@ const markReferralJoined = async (req, res) => {
       if (cfg) reward = cfg.rewardAmount;
     }
 
-    await Earning.create({ userId: referral.referrerId, amount: reward, type: 'REFERRAL', description: `Referral reward for job ${referral.jobId}` });
+    await Earning.create({
+      userId: referral.referrerId,
+      amount: reward,
+      type: 'REFERRAL',
+      referralId: referral.id,
+      description: `Referral reward for ${job ? job.title : 'job ' + referral.jobId} (referral ${referral.id}, candidate ${referral.candidateMobile})`
+    });
 
     res.json({ message: 'Referral marked as joined and earning created' });
   } catch (err) {
@@ -144,13 +180,32 @@ const markReferralJoined = async (req, res) => {
 
 const getMyEarnings = async (req, res) => {
   try {
+    // Include linked referral and job info when available so clients can show context
     const earnings = await Earning.findAll({
       where: { userId: req.user.id },
+      include: [
+        { model: Referral, as: 'referral', include: [{ model: Job }] }
+      ],
+      order: [['createdAt', 'DESC']]
     });
     res.json(earnings);
   } catch (err) {
+    console.error('Error fetching earnings:', err);
     res.status(500).json({ error: 'Failed to fetch earnings' });
   }
 };
 
-module.exports = { createReferral, getMyReferrals, withdrawReferral, rejectReferral, markReferralJoined, getMyEarnings };
+const getReferralById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const referral = await Referral.findByPk(id, { include: [Job] });
+    if (!referral) return res.status(404).json({ error: 'Referral not found' });
+    if (referral.referrerId !== req.user.id) return res.status(403).json({ error: 'Not authorized' });
+    res.json(referral);
+  } catch (err) {
+    console.error('Error fetching referral by id:', err);
+    res.status(500).json({ error: 'Failed to fetch referral' });
+  }
+};
+
+module.exports = { createReferral, getMyReferrals, withdrawReferral, rejectReferral, markReferralJoined, getMyEarnings, getReferralById };

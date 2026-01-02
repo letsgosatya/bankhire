@@ -1,3 +1,5 @@
+cmd.exe /c "cd C:\Satya_RealtimeProjects\BankHire\bankhire && npm install --silent"
+
 Invoke-WebRequest -Uri http://localhost:3001/auth/send-otp -Method POST -Body '{"mobile":"1234567890"}' -ContentType 'application/json' | Select-Object -ExpandProperty Content
 
 cd c:\Satya_RealtimeProjects\BankHire\bankhire ; npm install multer

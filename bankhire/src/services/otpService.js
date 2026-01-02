@@ -4,22 +4,39 @@ const axios = require('axios');
 // 2Factor API key from environment variables
 const apiKey = process.env.TWO_FACTOR_API_KEY;
 
-// In-memory storage for OTPs (for MVP, use Redis or DB in production)
-const otpStore = new Map();
+// File-backed storage for OTPs (survives server restarts)
+const otpStore = require('./otpStore');
 
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 };
+
+// Normalize mobile numbers to a canonical form for storage and lookup.
+// Strategy: keep digits only and use last 10 digits when longer (Indian numbers)
+function normalizeMobile(mobile) {
+  if (!mobile) return '';
+  const digits = String(mobile).replace(/\D/g, '');
+  if (digits.length > 10) return digits.slice(-10);
+  return digits;
+}
 
 const sendOTP = async (mobile) => {
   const otp = process.env.USE_HARDCODED_OTP === 'true' ? '123456' : generateOTP();
   const hashedOtp = await bcrypt.hash(otp, 10);
   const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
 
-  otpStore.set(mobile, { hashedOtp, expiry });
+  // Canonicalize mobile for store and later lookup
+  const canon = normalizeMobile(mobile);
+  if (!canon) throw new Error('Invalid mobile number');
 
-  // Format mobile with country code for 2Factor
-  const formattedMobile = mobile.startsWith('91') ? mobile : `91${mobile}`;
+  try{
+    await otpStore.setOtp(canon, hashedOtp, expiry);
+  }catch(e){
+    console.error('Failed to persist OTP', e);
+  }
+
+  // Format mobile with country code for 2Factor (always use 91+canon)
+  const formattedMobile = `91${canon}`;
 
   if (process.env.USE_HARDCODED_OTP === 'true') {
     console.log(`HARDCODED OTP mode: OTP for ${mobile}: ${otp} (use this for testing)`);
@@ -65,8 +82,52 @@ const sendOTP = async (mobile) => {
 
 const verifyOTP = async (mobile, otp) => {
   console.log(`Verifying OTP for mobile: ${mobile}, OTP: ${otp}`);
-  const stored = otpStore.get(mobile);
-  console.log('Stored data:', stored ? { expiry: stored.expiry, usedAt: stored.usedAt, hasData: true } : 'not found');
+
+  // In hardcoded OTP testing mode, accept the known OTP value regardless of store state
+  // Canonicalize incoming mobile and prepare key variants
+  const canon = normalizeMobile(mobile);
+  if (!canon) {
+    console.log('Invalid mobile format');
+    return false;
+  }
+  const variants = [canon, '91' + canon];
+
+  // If hardcoded OTP testing mode, accept the known OTP and mark the matched record used
+  if (process.env.USE_HARDCODED_OTP === 'true' && otp === '123456') {
+    console.log('Hardcoded OTP accepted for testing');
+    for (const key of variants) {
+      try {
+        const rec = await otpStore.getOtp(key);
+        if (rec) {
+          console.log(`Found OTP record for key ${key}, marking used`);
+          await otpStore.markUsed(key);
+          return true;
+        }
+      } catch (e) {
+        console.error('Error checking OTP store for key', key, e);
+      }
+    }
+    // Not found in store, but still allow hardcoded OTP for testing
+    return true;
+  }
+
+  // Read stored record from persistent store and capture the actual matched key
+  let stored = null;
+  let matchedKey = null;
+  for (const key of variants) {
+    try {
+      const rec = await otpStore.getOtp(key);
+      if (rec) {
+        stored = rec;
+        matchedKey = key;
+        break;
+      }
+    } catch (e) {
+      console.error('Error reading OTP store for key', key, e);
+    }
+  }
+
+  console.log('Stored data:', stored ? { expiry: stored.expiry, usedAt: stored.usedAt, hasData: true, key: matchedKey } : 'not found');
   if (!stored) {
     console.log('OTP not found in store');
     return false;
@@ -74,7 +135,7 @@ const verifyOTP = async (mobile, otp) => {
 
   if (Date.now() > stored.expiry) {
     console.log('OTP expired');
-    otpStore.delete(mobile);
+    if (matchedKey) await otpStore.deleteOtp(matchedKey);
     return false;
   }
 
@@ -85,16 +146,16 @@ const verifyOTP = async (mobile, otp) => {
       return true;
     } else {
       console.log('OTP used and grace period expired');
-      otpStore.delete(mobile);
+      if (matchedKey) await otpStore.deleteOtp(matchedKey);
       return false;
     }
   }
 
   const isValid = await bcrypt.compare(otp, stored.hashedOtp);
   console.log('OTP valid:', isValid);
-  if (isValid) {
-    stored.usedAt = Date.now();
-    // Don't delete, allow grace period
+  if (isValid && matchedKey) {
+    await otpStore.markUsed(matchedKey);
+    // Keep record for grace window
   }
   return isValid;
 };

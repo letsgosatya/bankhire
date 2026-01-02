@@ -1,0 +1,16 @@
+﻿2026-01-01T17:02:33.256Z - Error verifying mobile 8593986894: Error
+    at Query.run (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async User.findAll (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\model.js:1140:21)
+    at async User.findOne (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\model.js:1240:12)
+    at async verifyOtp (C:\Satya_RealtimeProjects\BankHire\bankhire\src\controllers\authController.js:59:16)
+2026-01-01T17:04:23.683Z - Error verifying mobile 8593986894: Error
+    at Query.run (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async PostgresQueryInterface.select (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async User.findAll (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\model.js:1140:21)
+    at async User.findOne (C:\Satya_RealtimeProjects\BankHire\bankhire\node_modules\sequelize\lib\model.js:1240:12)
+    at async verifyOtp (C:\Satya_RealtimeProjects\BankHire\bankhire\src\controllers\authController.js:59:16)

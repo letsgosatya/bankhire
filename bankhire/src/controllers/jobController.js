@@ -23,7 +23,8 @@ const createJob = async (req, res) => {
 
 const getJobs = async (req, res) => {
   try {
-    const jobs = await Job.findAll();
+    // Return newest jobs first so recently posted jobs appear on top
+    const jobs = await Job.findAll({ order: [['createdAt', 'DESC']] });
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch jobs' });

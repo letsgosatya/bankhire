@@ -1,0 +1,32 @@
+{
+  "8593986894": {
+    "hashedOtp": "$2a$10$05hhUCFCO.1VzjDFxGFDdO36XHtBG8ULTwycie6zJBsPGOOXdQfU6",
+    "expiry": 1767388945996,
+    "usedAt": 1767388651861
+  },
+  "8888888888": {
+    "hashedOtp": "$2a$10$zgf0rrDseFikBgQe104/v.0IFQbDfsY8lDYXS7qXiaBFPhCqeZEsi",
+    "expiry": 1767287555434,
+    "usedAt": 1767287260211
+  },
+  "7777777777": {
+    "hashedOtp": "$2a$10$M6.c7ZEwEdt11ie/xrzppOjhhyj0lcklTsO.s6Fni2b8kMyCifEXq",
+    "expiry": 1767287608317,
+    "usedAt": 1767287313256
+  },
+  "9999999999": {
+    "hashedOtp": "$2a$10$y5BZFCVXU/wH485wbcLuw.r//ll0pmFR6hvrrP0gmICdlXspUpBwm",
+    "expiry": 1767287719164,
+    "usedAt": 1767287424159
+  },
+  "9999911111": {
+    "hashedOtp": "$2a$10$9PycHLn5H71EmeehyPH7yOCnUHi2AkZdX.uWocCp8ACT0xwz1X31.",
+    "expiry": 1767288218221,
+    "usedAt": 1767287923680
+  },
+  "7777000001": {
+    "hashedOtp": "$2a$10$UYRzKko18O3I2Nxvm.w8uO/Xog1jpl9RYmEEA5ed7dJU1ZFs1wxGW",
+    "expiry": 1767394614232,
+    "usedAt": 1767394319330
+  }
+}

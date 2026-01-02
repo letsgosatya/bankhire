@@ -45,6 +45,10 @@ Referral.belongsTo(Job, { foreignKey: 'jobId' });
 User.hasMany(Earning, { foreignKey: 'userId' });
 Earning.belongsTo(User, { foreignKey: 'userId' });
 
+// Link earnings to referrals when available
+Earning.belongsTo(Referral, { foreignKey: 'referralId', as: 'referral' });
+Referral.hasMany(Earning, { foreignKey: 'referralId' });
+
 app.use('/auth', authRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/referral', referralRoutes);

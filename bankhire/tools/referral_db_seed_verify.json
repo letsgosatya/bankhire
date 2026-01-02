@@ -1,0 +1,45 @@
+{
+  "employee": {
+    "id": 3,
+    "mobile": "7777000001",
+    "role": "EMPLOYEE",
+    "resumeUploaded": false,
+    "resumeFileReference": null,
+    "jobRole": null,
+    "location": "Bengaluru",
+    "createdAt": "2026-01-01T04:01:17.695Z",
+    "updatedAt": "2026-01-01T04:01:17.695Z"
+  },
+  "referrals": [
+    {
+      "id": 24,
+      "referrerId": 3,
+      "candidateMobile": "9999988888",
+      "jobId": 1,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.982Z",
+      "updatedAt": "2026-01-01T04:01:17.982Z"
+    },
+    {
+      "id": 25,
+      "referrerId": 3,
+      "candidateMobile": "9999987777",
+      "jobId": 2,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.984Z",
+      "updatedAt": "2026-01-01T04:01:17.984Z"
+    }
+  ],
+  "setting": {
+    "id": 1,
+    "maxReferralsPerDay": 5,
+    "maxReferralsPerMonth": 50,
+    "defaultReferralExpiryDays": 30
+  }
+}

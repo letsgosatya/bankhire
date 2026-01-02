@@ -1,0 +1,24 @@
+[
+  {
+    "id": 29,
+    "userId": 3,
+    "amount": 500,
+    "type": "REFERRAL",
+    "description": null,
+    "referralId": null,
+    "status": "PENDING",
+    "createdAt": "2026-01-01T04:01:17.990Z",
+    "updatedAt": "2026-01-01T04:01:17.990Z"
+  },
+  {
+    "id": 28,
+    "userId": 3,
+    "amount": 1500,
+    "type": "REFERRAL",
+    "description": null,
+    "referralId": null,
+    "status": "PENDING",
+    "createdAt": "2026-01-01T04:01:17.988Z",
+    "updatedAt": "2026-01-01T04:01:17.988Z"
+  }
+]

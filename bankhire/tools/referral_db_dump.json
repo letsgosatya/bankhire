@@ -1,0 +1,899 @@
+{
+  "referrals": [
+    {
+      "id": 1,
+      "referrerId": 4,
+      "candidateMobile": "6666666666",
+      "jobId": 1,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.879Z",
+      "updatedAt": "2026-01-01T04:01:17.879Z"
+    },
+    {
+      "id": 2,
+      "referrerId": 4,
+      "candidateMobile": "5555555555",
+      "jobId": 2,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.885Z",
+      "updatedAt": "2026-01-01T04:01:17.885Z"
+    },
+    {
+      "id": 3,
+      "referrerId": 4,
+      "candidateMobile": "4444444444",
+      "jobId": 3,
+      "status": "JOINED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.887Z",
+      "updatedAt": "2026-01-01T04:01:17.887Z"
+    },
+    {
+      "id": 4,
+      "referrerId": 4,
+      "candidateMobile": "3333333333",
+      "jobId": 9,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.890Z",
+      "updatedAt": "2026-01-01T04:01:17.890Z"
+    },
+    {
+      "id": 5,
+      "referrerId": 4,
+      "candidateMobile": "2222222222",
+      "jobId": 10,
+      "status": "JOINED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.893Z",
+      "updatedAt": "2026-01-01T04:01:17.893Z"
+    },
+    {
+      "id": 6,
+      "referrerId": 4,
+      "candidateMobile": "1111111111",
+      "jobId": 15,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.895Z",
+      "updatedAt": "2026-01-01T04:01:17.895Z"
+    },
+    {
+      "id": 7,
+      "referrerId": 5,
+      "candidateMobile": "0000000000",
+      "jobId": 4,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.897Z",
+      "updatedAt": "2026-01-01T04:01:17.897Z"
+    },
+    {
+      "id": 8,
+      "referrerId": 5,
+      "candidateMobile": "9999999990",
+      "jobId": 5,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.898Z",
+      "updatedAt": "2026-01-01T04:01:17.898Z"
+    },
+    {
+      "id": 9,
+      "referrerId": 5,
+      "candidateMobile": "8888888880",
+      "jobId": 11,
+      "status": "JOINED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.900Z",
+      "updatedAt": "2026-01-01T04:01:17.900Z"
+    },
+    {
+      "id": 10,
+      "referrerId": 5,
+      "candidateMobile": "7777777770",
+      "jobId": 12,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.902Z",
+      "updatedAt": "2026-01-01T04:01:17.902Z"
+    },
+    {
+      "id": 11,
+      "referrerId": 5,
+      "candidateMobile": "6666666660",
+      "jobId": 16,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.903Z",
+      "updatedAt": "2026-01-01T04:01:17.903Z"
+    },
+    {
+      "id": 12,
+      "referrerId": 7,
+      "candidateMobile": "5555555550",
+      "jobId": 7,
+      "status": "JOINED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.905Z",
+      "updatedAt": "2026-01-01T04:01:17.905Z"
+    },
+    {
+      "id": 13,
+      "referrerId": 7,
+      "candidateMobile": "4444444440",
+      "jobId": 14,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.906Z",
+      "updatedAt": "2026-01-01T04:01:17.906Z"
+    },
+    {
+      "id": 14,
+      "referrerId": 7,
+      "candidateMobile": "3333333330",
+      "jobId": 18,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.908Z",
+      "updatedAt": "2026-01-01T04:01:17.908Z"
+    },
+    {
+      "id": 15,
+      "referrerId": 8,
+      "candidateMobile": "2222222220",
+      "jobId": 2,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.910Z",
+      "updatedAt": "2026-01-01T04:01:17.910Z"
+    },
+    {
+      "id": 16,
+      "referrerId": 8,
+      "candidateMobile": "1111111110",
+      "jobId": 9,
+      "status": "JOINED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.912Z",
+      "updatedAt": "2026-01-01T04:01:17.912Z"
+    },
+    {
+      "id": 17,
+      "referrerId": 9,
+      "candidateMobile": "0000000001",
+      "jobId": 4,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.914Z",
+      "updatedAt": "2026-01-01T04:01:17.914Z"
+    },
+    {
+      "id": 18,
+      "referrerId": 9,
+      "candidateMobile": "9999999991",
+      "jobId": 11,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.915Z",
+      "updatedAt": "2026-01-01T04:01:17.915Z"
+    },
+    {
+      "id": 19,
+      "referrerId": 4,
+      "candidateMobile": "8888888881",
+      "jobId": 21,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.917Z",
+      "updatedAt": "2026-01-01T04:01:17.917Z"
+    },
+    {
+      "id": 20,
+      "referrerId": 5,
+      "candidateMobile": "7777777771",
+      "jobId": 22,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.919Z",
+      "updatedAt": "2026-01-01T04:01:17.919Z"
+    },
+    {
+      "id": 21,
+      "referrerId": 6,
+      "candidateMobile": "6666666661",
+      "jobId": 23,
+      "status": "JOINED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.920Z",
+      "updatedAt": "2026-01-01T04:01:17.920Z"
+    },
+    {
+      "id": 22,
+      "referrerId": 7,
+      "candidateMobile": "5555555551",
+      "jobId": 24,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.922Z",
+      "updatedAt": "2026-01-01T04:01:17.922Z"
+    },
+    {
+      "id": 23,
+      "referrerId": 8,
+      "candidateMobile": "4444444441",
+      "jobId": 25,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.924Z",
+      "updatedAt": "2026-01-01T04:01:17.924Z"
+    },
+    {
+      "id": 24,
+      "referrerId": 3,
+      "candidateMobile": "9999988888",
+      "jobId": 1,
+      "status": "REFERRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.982Z",
+      "updatedAt": "2026-01-01T04:01:17.982Z"
+    },
+    {
+      "id": 25,
+      "referrerId": 3,
+      "candidateMobile": "9999987777",
+      "jobId": 2,
+      "status": "APPLIED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:01:17.984Z",
+      "updatedAt": "2026-01-01T04:01:17.984Z"
+    },
+    {
+      "id": 26,
+      "referrerId": 18,
+      "candidateMobile": "0000000003",
+      "jobId": 30,
+      "status": "EXPIRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:02:08.942Z",
+      "updatedAt": "2026-01-01T04:02:08.953Z"
+    },
+    {
+      "id": 27,
+      "referrerId": 18,
+      "candidateMobile": "0000000004",
+      "jobId": 30,
+      "status": "NOT_ELIGIBLE",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:02:08.960Z",
+      "updatedAt": "2026-01-01T04:02:08.966Z"
+    },
+    {
+      "id": 28,
+      "referrerId": 18,
+      "candidateMobile": "0000000003",
+      "jobId": 30,
+      "status": "EXPIRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:05:26.283Z",
+      "updatedAt": "2026-01-01T04:05:26.308Z"
+    },
+    {
+      "id": 29,
+      "referrerId": 18,
+      "candidateMobile": "0000000004",
+      "jobId": 30,
+      "status": "NOT_ELIGIBLE",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:05:26.315Z",
+      "updatedAt": "2026-01-01T04:05:26.323Z"
+    },
+    {
+      "id": 30,
+      "referrerId": 18,
+      "candidateMobile": "0000000003",
+      "jobId": 30,
+      "status": "EXPIRED",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:05:53.386Z",
+      "updatedAt": "2026-01-01T04:05:53.411Z"
+    },
+    {
+      "id": 31,
+      "referrerId": 18,
+      "candidateMobile": "0000000004",
+      "jobId": 30,
+      "status": "NOT_ELIGIBLE",
+      "rejectionReason": null,
+      "rejectedBy": null,
+      "expiresAt": null,
+      "createdAt": "2026-01-01T04:05:53.418Z",
+      "updatedAt": "2026-01-01T04:05:53.425Z"
+    }
+  ],
+  "applications": [
+    {
+      "id": 1,
+      "jobId": 1,
+      "candidateId": 4,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.802Z",
+      "updatedAt": "2026-01-01T04:01:17.802Z"
+    },
+    {
+      "id": 2,
+      "jobId": 2,
+      "candidateId": 4,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.806Z",
+      "updatedAt": "2026-01-01T04:01:17.806Z"
+    },
+    {
+      "id": 3,
+      "jobId": 3,
+      "candidateId": 4,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.808Z",
+      "updatedAt": "2026-01-01T04:01:17.808Z"
+    },
+    {
+      "id": 4,
+      "jobId": 4,
+      "candidateId": 4,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.810Z",
+      "updatedAt": "2026-01-01T04:01:17.810Z"
+    },
+    {
+      "id": 5,
+      "jobId": 9,
+      "candidateId": 4,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.812Z",
+      "updatedAt": "2026-01-01T04:01:17.812Z"
+    },
+    {
+      "id": 6,
+      "jobId": 10,
+      "candidateId": 4,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.814Z",
+      "updatedAt": "2026-01-01T04:01:17.814Z"
+    },
+    {
+      "id": 7,
+      "jobId": 15,
+      "candidateId": 4,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.816Z",
+      "updatedAt": "2026-01-01T04:01:17.816Z"
+    },
+    {
+      "id": 8,
+      "jobId": 5,
+      "candidateId": 5,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.817Z",
+      "updatedAt": "2026-01-01T04:01:17.817Z"
+    },
+    {
+      "id": 9,
+      "jobId": 6,
+      "candidateId": 5,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.819Z",
+      "updatedAt": "2026-01-01T04:01:17.819Z"
+    },
+    {
+      "id": 10,
+      "jobId": 7,
+      "candidateId": 5,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.821Z",
+      "updatedAt": "2026-01-01T04:01:17.821Z"
+    },
+    {
+      "id": 11,
+      "jobId": 11,
+      "candidateId": 5,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.823Z",
+      "updatedAt": "2026-01-01T04:01:17.823Z"
+    },
+    {
+      "id": 12,
+      "jobId": 12,
+      "candidateId": 5,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.824Z",
+      "updatedAt": "2026-01-01T04:01:17.824Z"
+    },
+    {
+      "id": 13,
+      "jobId": 16,
+      "candidateId": 5,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.826Z",
+      "updatedAt": "2026-01-01T04:01:17.826Z"
+    },
+    {
+      "id": 14,
+      "jobId": 3,
+      "candidateId": 6,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.828Z",
+      "updatedAt": "2026-01-01T04:01:17.828Z"
+    },
+    {
+      "id": 15,
+      "jobId": 8,
+      "candidateId": 6,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.830Z",
+      "updatedAt": "2026-01-01T04:01:17.830Z"
+    },
+    {
+      "id": 16,
+      "jobId": 13,
+      "candidateId": 6,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.832Z",
+      "updatedAt": "2026-01-01T04:01:17.832Z"
+    },
+    {
+      "id": 17,
+      "jobId": 1,
+      "candidateId": 7,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.834Z",
+      "updatedAt": "2026-01-01T04:01:17.834Z"
+    },
+    {
+      "id": 18,
+      "jobId": 7,
+      "candidateId": 7,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.836Z",
+      "updatedAt": "2026-01-01T04:01:17.836Z"
+    },
+    {
+      "id": 19,
+      "jobId": 14,
+      "candidateId": 7,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.838Z",
+      "updatedAt": "2026-01-01T04:01:17.838Z"
+    },
+    {
+      "id": 20,
+      "jobId": 18,
+      "candidateId": 7,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.840Z",
+      "updatedAt": "2026-01-01T04:01:17.840Z"
+    },
+    {
+      "id": 21,
+      "jobId": 2,
+      "candidateId": 8,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.841Z",
+      "updatedAt": "2026-01-01T04:01:17.841Z"
+    },
+    {
+      "id": 22,
+      "jobId": 9,
+      "candidateId": 8,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.843Z",
+      "updatedAt": "2026-01-01T04:01:17.843Z"
+    },
+    {
+      "id": 23,
+      "jobId": 17,
+      "candidateId": 8,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.845Z",
+      "updatedAt": "2026-01-01T04:01:17.845Z"
+    },
+    {
+      "id": 24,
+      "jobId": 4,
+      "candidateId": 9,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.848Z",
+      "updatedAt": "2026-01-01T04:01:17.848Z"
+    },
+    {
+      "id": 25,
+      "jobId": 11,
+      "candidateId": 9,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.850Z",
+      "updatedAt": "2026-01-01T04:01:17.850Z"
+    },
+    {
+      "id": 26,
+      "jobId": 19,
+      "candidateId": 9,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.851Z",
+      "updatedAt": "2026-01-01T04:01:17.851Z"
+    },
+    {
+      "id": 27,
+      "jobId": 6,
+      "candidateId": 10,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.853Z",
+      "updatedAt": "2026-01-01T04:01:17.853Z"
+    },
+    {
+      "id": 28,
+      "jobId": 12,
+      "candidateId": 10,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.855Z",
+      "updatedAt": "2026-01-01T04:01:17.855Z"
+    },
+    {
+      "id": 29,
+      "jobId": 8,
+      "candidateId": 11,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.856Z",
+      "updatedAt": "2026-01-01T04:01:17.856Z"
+    },
+    {
+      "id": 30,
+      "jobId": 15,
+      "candidateId": 11,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.858Z",
+      "updatedAt": "2026-01-01T04:01:17.858Z"
+    },
+    {
+      "id": 31,
+      "jobId": 20,
+      "candidateId": 11,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.860Z",
+      "updatedAt": "2026-01-01T04:01:17.860Z"
+    },
+    {
+      "id": 32,
+      "jobId": 3,
+      "candidateId": 12,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.863Z",
+      "updatedAt": "2026-01-01T04:01:17.863Z"
+    },
+    {
+      "id": 33,
+      "jobId": 10,
+      "candidateId": 12,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.864Z",
+      "updatedAt": "2026-01-01T04:01:17.864Z"
+    },
+    {
+      "id": 34,
+      "jobId": 5,
+      "candidateId": 13,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.866Z",
+      "updatedAt": "2026-01-01T04:01:17.866Z"
+    },
+    {
+      "id": 35,
+      "jobId": 13,
+      "candidateId": 13,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.868Z",
+      "updatedAt": "2026-01-01T04:01:17.868Z"
+    },
+    {
+      "id": 36,
+      "jobId": 21,
+      "candidateId": 4,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.869Z",
+      "updatedAt": "2026-01-01T04:01:17.869Z"
+    },
+    {
+      "id": 37,
+      "jobId": 22,
+      "candidateId": 5,
+      "status": "INTERVIEW",
+      "createdAt": "2026-01-01T04:01:17.871Z",
+      "updatedAt": "2026-01-01T04:01:17.871Z"
+    },
+    {
+      "id": 38,
+      "jobId": 23,
+      "candidateId": 6,
+      "status": "APPLIED",
+      "createdAt": "2026-01-01T04:01:17.873Z",
+      "updatedAt": "2026-01-01T04:01:17.873Z"
+    },
+    {
+      "id": 39,
+      "jobId": 24,
+      "candidateId": 7,
+      "status": "SELECTED",
+      "createdAt": "2026-01-01T04:01:17.875Z",
+      "updatedAt": "2026-01-01T04:01:17.875Z"
+    },
+    {
+      "id": 40,
+      "jobId": 25,
+      "candidateId": 8,
+      "status": "JOINED",
+      "createdAt": "2026-01-01T04:01:17.877Z",
+      "updatedAt": "2026-01-01T04:01:17.877Z"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "mobile": "9999999999",
+      "role": "ADMIN",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": null,
+      "location": "Mumbai",
+      "createdAt": "2026-01-01T04:01:17.670Z",
+      "updatedAt": "2026-01-01T04:01:17.670Z"
+    },
+    {
+      "id": 2,
+      "mobile": "8888888888",
+      "role": "MANAGER",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": null,
+      "location": "Delhi",
+      "createdAt": "2026-01-01T04:01:17.691Z",
+      "updatedAt": "2026-01-01T04:01:17.691Z"
+    },
+    {
+      "id": 3,
+      "mobile": "7777000001",
+      "role": "EMPLOYEE",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": null,
+      "location": "Bengaluru",
+      "createdAt": "2026-01-01T04:01:17.695Z",
+      "updatedAt": "2026-01-01T04:01:17.695Z"
+    },
+    {
+      "id": 4,
+      "mobile": "8593986894",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate1.pdf",
+      "jobRole": "Bank Manager",
+      "location": "Bangalore",
+      "createdAt": "2026-01-01T04:01:17.699Z",
+      "updatedAt": "2026-01-01T04:01:17.699Z"
+    },
+    {
+      "id": 5,
+      "mobile": "7777777777",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate2.pdf",
+      "jobRole": "Loan Officer",
+      "location": "Chennai",
+      "createdAt": "2026-01-01T04:01:17.702Z",
+      "updatedAt": "2026-01-01T04:01:17.702Z"
+    },
+    {
+      "id": 6,
+      "mobile": "6666666666",
+      "role": "CANDIDATE",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": "Teller",
+      "location": "Pune",
+      "createdAt": "2026-01-01T04:01:17.706Z",
+      "updatedAt": "2026-01-01T04:01:17.706Z"
+    },
+    {
+      "id": 7,
+      "mobile": "5555555555",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate3.pdf",
+      "jobRole": "Credit Analyst",
+      "location": "Hyderabad",
+      "createdAt": "2026-01-01T04:01:17.709Z",
+      "updatedAt": "2026-01-01T04:01:17.709Z"
+    },
+    {
+      "id": 8,
+      "mobile": "4444444444",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate4.pdf",
+      "jobRole": "Relationship Manager",
+      "location": "Kolkata",
+      "createdAt": "2026-01-01T04:01:17.712Z",
+      "updatedAt": "2026-01-01T04:01:17.712Z"
+    },
+    {
+      "id": 9,
+      "mobile": "3333333333",
+      "role": "CANDIDATE",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": "Financial Advisor",
+      "location": "Ahmedabad",
+      "createdAt": "2026-01-01T04:01:17.715Z",
+      "updatedAt": "2026-01-01T04:01:17.715Z"
+    },
+    {
+      "id": 10,
+      "mobile": "2222222222",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate5.pdf",
+      "jobRole": "Operations Manager",
+      "location": "Jaipur",
+      "createdAt": "2026-01-01T04:01:17.719Z",
+      "updatedAt": "2026-01-01T04:01:17.719Z"
+    },
+    {
+      "id": 11,
+      "mobile": "1111111111",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate6.pdf",
+      "jobRole": "Sales Manager",
+      "location": "Surat",
+      "createdAt": "2026-01-01T04:01:17.722Z",
+      "updatedAt": "2026-01-01T04:01:17.722Z"
+    },
+    {
+      "id": 12,
+      "mobile": "0000000000",
+      "role": "CANDIDATE",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": "Business Development Manager",
+      "location": "Indore",
+      "createdAt": "2026-01-01T04:01:17.724Z",
+      "updatedAt": "2026-01-01T04:01:17.724Z"
+    },
+    {
+      "id": 13,
+      "mobile": "9999999990",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate7.pdf",
+      "jobRole": "Personal Banker",
+      "location": "Nagpur",
+      "createdAt": "2026-01-01T04:01:17.727Z",
+      "updatedAt": "2026-01-01T04:01:17.727Z"
+    },
+    {
+      "id": 14,
+      "mobile": "8888888880",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate8.pdf",
+      "jobRole": "Mortgage Sales Officer",
+      "location": "Vadodara",
+      "createdAt": "2026-01-01T04:01:17.730Z",
+      "updatedAt": "2026-01-01T04:01:17.730Z"
+    },
+    {
+      "id": 15,
+      "mobile": "7777777770",
+      "role": "CANDIDATE",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": "Investment Sales Advisor",
+      "location": "Coimbatore",
+      "createdAt": "2026-01-01T04:01:17.732Z",
+      "updatedAt": "2026-01-01T04:01:17.732Z"
+    },
+    {
+      "id": 16,
+      "mobile": "6666666660",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate9.pdf",
+      "jobRole": "Insurance Sales Officer",
+      "location": "Mysore",
+      "createdAt": "2026-01-01T04:01:17.735Z",
+      "updatedAt": "2026-01-01T04:01:17.735Z"
+    },
+    {
+      "id": 17,
+      "mobile": "5555555550",
+      "role": "CANDIDATE",
+      "resumeUploaded": true,
+      "resumeFileReference": "uploads/resume_candidate10.pdf",
+      "jobRole": "Corporate Sales Executive",
+      "location": "Vijayawada",
+      "createdAt": "2026-01-01T04:01:17.737Z",
+      "updatedAt": "2026-01-01T04:01:17.737Z"
+    },
+    {
+      "id": 18,
+      "mobile": "9999933333",
+      "role": "EMPLOYEE",
+      "resumeUploaded": false,
+      "resumeFileReference": null,
+      "jobRole": null,
+      "location": "Bangalore",
+      "createdAt": "2026-01-01T04:02:08.903Z",
+      "updatedAt": "2026-01-01T04:02:08.903Z"
+    }
+  ],
+  "generatedAt": "2026-01-01T04:06:00.734Z"
+}

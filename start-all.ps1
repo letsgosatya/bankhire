@@ -14,6 +14,9 @@ foreach ($port in $ports) {
 Write-Host "Setting up database..." -ForegroundColor Yellow
 Start-Process -FilePath "node.exe" -ArgumentList "setup-db.js" -WorkingDirectory "C:\Satya_RealtimeProjects\BankHire\bankhire" -NoNewWindow -Wait
 
+Write-Host "Running database migrations (adding missing columns)..." -ForegroundColor Yellow
+Start-Process -FilePath "node.exe" -ArgumentList "tools/addReferralResumeFields.js" -WorkingDirectory "C:\Satya_RealtimeProjects\BankHire\bankhire" -NoNewWindow -Wait
+
 Write-Host "Starting BankHire Backend on port 3002..." -ForegroundColor Green
 Start-Process -FilePath "powershell.exe" -ArgumentList "-Command cd 'C:\Satya_RealtimeProjects\BankHire\bankhire'; npm run dev" -NoNewWindow
 

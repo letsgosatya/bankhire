@@ -41,6 +41,24 @@ const Referral = sequelize.define('Referral', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  // Optional candidate info & resume metadata (added for resume uploads during referral creation)
+  candidateName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  candidateEmail: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resumeFileReference: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resumeUploaded: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
   expiresAt: {
     type: DataTypes.DATE,
     allowNull: true,

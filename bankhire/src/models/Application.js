@@ -24,7 +24,7 @@ const Application = sequelize.define('Application', {
     },
   },
   status: {
-    type: DataTypes.ENUM('PENDING', 'CONFIRMED', 'REJECTED', 'INTERVIEW', 'SELECTED', 'JOINED'),
+    type: DataTypes.ENUM('PENDING', 'APPLIED', 'CONFIRMED', 'REJECTED', 'INTERVIEW', 'SELECTED', 'JOINED'),
     allowNull: false,
     defaultValue: 'PENDING',
   },

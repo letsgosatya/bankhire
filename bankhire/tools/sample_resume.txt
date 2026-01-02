@@ -1,0 +1,14 @@
+John Doe
+Senior Software Engineer
+Email: john.doe@example.com
+Phone: +91 98765 43210
+
+Professional Summary:
+Experienced software engineer with 8+ years in backend development.
+
+Skills:
+- Node.js, Express, PostgreSQL, Sequelize
+- Typescript, React, AWS
+
+Experience:
+- Company A ...

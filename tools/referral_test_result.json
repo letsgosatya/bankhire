@@ -1,0 +1,78 @@
+{
+  "steps": [
+    {
+      "step": "start",
+      "ts": "2026-01-02T21:33:03.970Z"
+    },
+    {
+      "step": "verify_otp",
+      "detail": "Verifying employee OTP"
+    },
+    {
+      "step": "verify_otp_response",
+      "detail": true
+    },
+    {
+      "step": "create_referral",
+      "detail": "Creating referral for job 1 -> candidate 1111111111"
+    },
+    {
+      "step": "create_referral_response",
+      "detail": {
+        "status": "REFERRED",
+        "resumeUploaded": false,
+        "id": 32,
+        "referrerId": 3,
+        "candidateMobile": "1111111111",
+        "jobId": 1,
+        "expiresAt": "2026-02-01T21:33:04.327Z",
+        "updatedAt": "2026-01-02T21:33:04.329Z",
+        "createdAt": "2026-01-02T21:33:04.329Z",
+        "rejectionReason": null,
+        "rejectedBy": null,
+        "candidateName": null,
+        "candidateEmail": null,
+        "resumeFileReference": null
+      }
+    },
+    {
+      "step": "fetch_my_referrals",
+      "detail": "Fetching my referrals"
+    },
+    {
+      "step": "my_referrals_count",
+      "detail": 3
+    },
+    {
+      "step": "withdraw",
+      "detail": "Attempting withdraw of referral id 32"
+    },
+    {
+      "step": "withdraw_response",
+      "detail": {
+        "message": "Referral withdrawn",
+        "referral": {
+          "id": 32,
+          "referrerId": 3,
+          "candidateMobile": "1111111111",
+          "jobId": 1,
+          "status": "WITHDRAWN",
+          "rejectionReason": null,
+          "rejectedBy": null,
+          "candidateName": null,
+          "candidateEmail": null,
+          "resumeFileReference": null,
+          "resumeUploaded": false,
+          "expiresAt": "2026-02-01T21:33:04.327Z",
+          "createdAt": "2026-01-02T21:33:04.329Z",
+          "updatedAt": "2026-01-02T21:33:04.366Z"
+        }
+      }
+    },
+    {
+      "step": "done",
+      "ts": "2026-01-02T21:33:04.369Z"
+    }
+  ],
+  "ok": true
+}

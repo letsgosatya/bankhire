@@ -1,0 +1,9 @@
+﻿{
+    "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibW9iaWxlIjoiODU5Mzk4Njg5NCIsInJvbGUiOiJDQU5ESURBVEUiLCJpYXQiOjE3NjcyODcxNzQsImV4cCI6MTc2Nzg5MTk3NH0.0NF5ZFcy29sU8O14CLXc9GKnUXYy4nlCRxRJQaA1u2o",
+    "user":  {
+                 "id":  4,
+                 "mobile":  "8593986894",
+                 "role":  "CANDIDATE",
+                 "resumeUploaded":  true
+             }
+}

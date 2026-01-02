@@ -1,0 +1,42 @@
+Running seed.js...
+Database seeded successfully with comprehensive test data!
+
+=== TEST ACCOUNTS ===
+Admin: 9999999999
+Manager: 8888888888
+
+=== CANDIDATE ACCOUNTS (with resume uploaded) ===
+Candidate 1: 8593986894 (Bank Manager, Bangalore) - Multiple applications & referrals
+Candidate 2: 7777777777 (Loan Officer, Chennai) - Active referrer
+Candidate 4: 4444444444 (Relationship Manager, Kolkata) - High earner
+Candidate 5: 2222222222 (Operations Manager, Jaipur) - Successful referrals
+Candidate 6: 1111111111 (Sales Manager, Surat) - Active in sales positions
+Candidate 8: 8888888880 (Mortgage Sales Officer, Vadodara) - Sales specialist
+Candidate 9: 7777777770 (Investment Sales Advisor, Coimbatore) - Investment focus
+Candidate 10: 5555555550 (Corporate Sales Executive, Vijayawada) - Corporate sales
+
+=== CANDIDATE ACCOUNTS (no resume) ===
+Candidate 3: 6666666666 (Teller, Pune) - Basic profile
+Candidate 7: 0000000000 (Business Development Manager, Indore) - Limited activity
+
+=== TEST SCENARIOS AVAILABLE ===
+✓ Job browsing and application (30+ jobs across all banks)
+✓ Resume upload/download functionality
+✓ Referral system with different statuses
+✓ Earnings tracking (Referral, Bonus, Commission)
+✓ Admin job management
+✓ Application status tracking (Applied → Interview → Selected → Joined)
+✓ User profiles with different completion levels
+
+=== RECOMMENDED TEST FLOW ===
+1. Login as Candidate 1 (8593986894) - test resume download
+2. Login as Admin (9999999999) - test job management
+3. Login as Candidate 3 (6666666666) - test resume upload
+4. Check referral earnings for Candidate 2 (7777777777)
+5. Test application status flow for various candidates
+Seed completed. Verifying DB...
+Found employee 7777000001 id= 3
+Referrals found for employee: 2
+AppSetting defaultReferralExpiryDays= 30
+Wrote verification dump to C:\Satya_RealtimeProjects\BankHire\bankhire\tools\referral_db_seed_verify.json
+Seed & DB verification succeeded

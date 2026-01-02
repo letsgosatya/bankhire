@@ -14,7 +14,8 @@ const getUsers = async (req, res) => {
 
 const getJobs = async (req, res) => {
   try {
-    const jobs = await Job.findAll();
+    // Admin listing: also return newest jobs first
+    const jobs = await Job.findAll({ order: [['createdAt', 'DESC']] });
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch jobs' });
@@ -122,50 +123,19 @@ const manualRefundReferral = async (req, res) => {
   }
 };
 
-const manualExpireReferral = async (req, res) => {
+
+
+const getExpiredReferrals = async (req, res) => {
   try {
-    const Referral = require('../models/Referral');
-    const { id } = req.params;
-    const r = await Referral.findByPk(id);
-    if (!r) return res.status(404).json({ error: 'Referral not found' });
-    r.status = 'EXPIRED';
-    await r.save();
-    res.json({ message: 'Referral expired', referral: r });
+    const page = parseInt(req.query.page || '1', 10) || 1;
+    const size = Math.min(100, Math.max(1, parseInt(req.query.size || '20', 10)));
+    const result = await getReferralsSvc({ where: { status: 'EXPIRED' }, page, size });
+    result.items = result.items.map(i => i.toJSON());
+    res.json(result);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to expire referral' });
+    res.status(500).json({ error: 'Failed to fetch expired referrals' });
   }
 };
 
-const manualRefundReferral = async (req, res) => {
-  try {
-    const Referral = require('../models/Referral');
-    const Job = require('../models/Job');
-    const ReferralRewardConfig = require('../models/ReferralRewardConfig');
-    const Earning = require('../models/Earning');
-    const { id } = req.params;
-    const r = await Referral.findByPk(id);
-    if (!r) return res.status(404).json({ error: 'Referral not found' });
-
-    // mark not eligible
-    r.status = 'NOT_ELIGIBLE';
-    await r.save();
-
-    // compute reversal amount (as negative of configured reward)
-    let reward = parseInt(process.env.REFERRAL_REWARD || '1000');
-    const job = await Job.findByPk(r.jobId);
-    if (job) {
-      const cfg = await ReferralRewardConfig.findOne({ where: { bankName: job.bankName, jobRole: job.title } });
-      if (cfg) reward = cfg.rewardAmount;
-    }
-    // create negative earning as reversal
-    await Earning.create({ userId: r.referrerId, amount: -Math.abs(reward), type: 'REFERRAL_REVERSAL', description: `Reversal for referral ${r.id}` });
-
-    res.json({ message: 'Referral refunded (marked NOT_ELIGIBLE) and reversal created', referral: r });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to refund referral' });
-  }
-};
-
-module.exports = { getUsers, getJobs, getApplications, markApplicationJoined, getReferrals, manualExpireReferral, manualRefundReferral };
+module.exports = { getUsers, getJobs, getApplications, markApplicationJoined, getReferrals, getReferralDetails, manualExpireReferral, manualRefundReferral, getExpiredReferrals };
