@@ -20,6 +20,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 # Ensure only one CI run per branch at a time
 concurrency:
