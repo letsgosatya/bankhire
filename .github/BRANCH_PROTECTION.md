@@ -19,11 +19,12 @@
 #### ✅ Require status checks to pass before merging
 - Require branches to be up to date before merging: ✅
 - Required status checks:
-  - `Backend Tests`
-  - `Frontend E2E Tests`
-  - `Security & Quality Checks`
-  - `Build Verification`
-  - `CI Success`
+  - `Backend Tests` ✅ (114 Jest tests - ACTIVE)
+  - `Security & Quality Checks` ✅ (npm audit - ACTIVE)
+  - `Build Verification` ✅ (Production builds - ACTIVE)
+  - `CI Success` ✅ (Final status - ACTIVE)
+  - `Frontend E2E Tests` ⏸️ (Playwright tests - TEMPORARILY DISABLED)
+  - `Frontend ESLint` ⏸️ (Code quality - TEMPORARILY DISABLED)
 
 #### ✅ Require conversation resolution before merging
 - All comments must be resolved before merging
@@ -54,13 +55,14 @@
 
 The following checks must pass before any PR can be merged:
 
-| Check Name | Description |
-|------------|-------------|
-| `Backend Tests` | All 114 backend Jest tests |
-| `Frontend E2E Tests` | All Playwright E2E tests |
-| `Security & Quality Checks` | npm audit + ESLint |
-| `Build Verification` | Production build success |
-| `CI Success` | Final aggregated status |
+| Check Name | Description | Status |
+|------------|-------------|---------|
+| `Backend Tests` | All 114 backend Jest tests | ✅ ACTIVE |
+| `Security & Quality Checks` | npm audit for vulnerabilities | ✅ ACTIVE |
+| `Build Verification` | Production build success | ✅ ACTIVE |
+| `CI Success` | Final aggregated status | ✅ ACTIVE |
+| `Frontend E2E Tests` | Playwright E2E tests | ⏸️ DISABLED |
+| `Frontend ESLint` | Code quality checks | ⏸️ DISABLED |
 
 ---
 
