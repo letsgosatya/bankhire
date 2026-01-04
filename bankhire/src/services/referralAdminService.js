@@ -6,7 +6,23 @@ const Earning = require('../models/Earning');
 async function getReferrals({ where = {}, page = 1, size = 20 } = {}){
   const offset = (Math.max(1, page) - 1) * size;
   const { count, rows } = await Referral.findAndCountAll({ where, limit: size, offset, order: [['createdAt','DESC']] });
-  return { items: rows, total: count, page: Math.max(1, page), size };
+
+  // Eager-load candidate user resume info by mobile to show resumeUploaded/file on admin UI
+  const candidateMobiles = Array.from(new Set(rows.map(r => r.candidateMobile).filter(Boolean)));
+  let usersByMobile = {};
+  if(candidateMobiles.length){
+    const User = require('../models/User');
+    const userRows = await User.findAll({ where: { mobile: candidateMobiles } });
+    usersByMobile = userRows.reduce((acc, u) => { acc[u.mobile] = u; return acc; }, {});
+  }
+
+  const items = rows.map(r => {
+    const plain = r.get ? r.get({ plain: true }) : r;
+    const candidate = usersByMobile[plain.candidateMobile] || null;
+    return { ...plain, candidateUser: candidate ? { id: candidate.id, mobile: candidate.mobile, resumeUploaded: candidate.resumeUploaded, resumeFileReference: candidate.resumeFileReference } : null };
+  });
+
+  return { items, total: count, page: Math.max(1, page), size };
 }
 
 async function getReferralDetails(id){

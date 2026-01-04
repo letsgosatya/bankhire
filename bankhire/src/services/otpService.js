@@ -1,5 +1,14 @@
+/**
+ * ENHANCED OTP SERVICE
+ * Secure OTP generation, sending, and verification
+ * 
+ * Security: Rate limiting, attempt tracking, secure hashing, safe logging
+ */
+
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
+const securityConfig = require('../config/security');
+const safeLogger = require('../utils/safeLogger');
 
 // 2Factor API key from environment variables
 const apiKey = process.env.TWO_FACTOR_API_KEY;
@@ -20,60 +29,86 @@ function normalizeMobile(mobile) {
   return digits;
 }
 
-const sendOTP = async (mobile) => {
-  const otp = process.env.USE_HARDCODED_OTP === 'true' ? '123456' : generateOTP();
-  const hashedOtp = await bcrypt.hash(otp, 10);
-  const expiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+/**
+ * Mask mobile for safe logging
+ */
+const maskMobile = (mobile) => {
+  if (!mobile) return 'unknown';
+  const digits = String(mobile).replace(/\D/g, '');
+  if (digits.length >= 4) {
+    return 'XXXXXX' + digits.slice(-4);
+  }
+  return 'XXXX';
+};
 
+const sendOTP = async (mobile) => {
   // Canonicalize mobile for store and later lookup
   const canon = normalizeMobile(mobile);
   if (!canon) throw new Error('Invalid mobile number');
 
-  try{
+  // Security: Check rate limit before sending OTP
+  const canRequest = await otpStore.canRequestOtp(canon);
+  if (!canRequest) {
+    const remaining = await otpStore.getRemainingOtpRequests(canon);
+    safeLogger.security('OTP_RATE_LIMIT_EXCEEDED', { mobile: maskMobile(mobile) });
+    throw new Error(`Too many OTP requests. Please try again later. Remaining: ${remaining}`);
+  }
+
+  const otp = process.env.USE_HARDCODED_OTP === 'true' ? '123456' : generateOTP();
+  const hashedOtp = await bcrypt.hash(otp, securityConfig.OTP.HASH_ROUNDS);
+  const expiry = Date.now() + (securityConfig.OTP.EXPIRY_MINUTES * 60 * 1000);
+
+  try {
     await otpStore.setOtp(canon, hashedOtp, expiry);
-  }catch(e){
-    console.error('Failed to persist OTP', e);
+    // Record the OTP request for rate limiting
+    await otpStore.recordOtpRequest(canon);
+  } catch (e) {
+    // Security: Don't log sensitive details
+    safeLogger.error('Failed to persist OTP', e);
   }
 
   // Format mobile with country code for 2Factor (always use 91+canon)
   const formattedMobile = `91${canon}`;
 
+  // Security: Never log actual OTP in production
   if (process.env.USE_HARDCODED_OTP === 'true') {
-    console.log(`HARDCODED OTP mode: OTP for ${mobile}: ${otp} (use this for testing)`);
+    // Only log in dev/test mode
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[DEV] HARDCODED OTP mode: OTP for ${maskMobile(mobile)}`);
+    }
   } else {
     // Send OTP via SMS using 2Factor (skip if no API key)
     if (apiKey) {
       try {
-        console.log(`Sending OTP to ${formattedMobile}: ${otp}`);
+        // Security: Don't log OTP value
+        safeLogger.info('Sending OTP', { mobile: maskMobile(mobile), method: 'SMS' });
         const response = await axios.get(`https://2factor.in/API/V1/${apiKey}/SMS/${formattedMobile}/${otp}`);
-        console.log('2Factor response:', response.data);
         if (response.data.Status !== 'Success') {
-          console.log('SMS failed, trying voice call');
+          safeLogger.info('SMS failed, trying voice call', { mobile: maskMobile(mobile) });
           // Try voice call as fallback
           const voiceUrl = `https://2factor.in/API/V1/${apiKey}/VOICE/${formattedMobile}/${otp}`;
           const voiceResponse = await axios.get(voiceUrl);
-          console.log('Voice call response:', voiceResponse.data);
-          console.log(`OTP sent to ${formattedMobile}: ${otp} (via voice)`);
+          safeLogger.info('OTP sent via voice', { mobile: maskMobile(mobile) });
         } else {
-          console.log(`OTP sent to ${formattedMobile}: ${otp} (via SMS)`);
+          safeLogger.info('OTP sent via SMS', { mobile: maskMobile(mobile) });
         }
       } catch (error) {
-        console.error('Error sending SMS:', error.message);
-        console.log('Trying voice call as fallback');
+        safeLogger.error('Error sending SMS', error);
         try {
           // Try voice call as fallback
           const voiceUrl = `https://2factor.in/API/V1/${apiKey}/VOICE/${formattedMobile}/${otp}`;
-          const voiceResponse = await axios.get(voiceUrl);
-          console.log('Voice call response:', voiceResponse.data);
-          console.log(`OTP sent to ${formattedMobile}: ${otp} (via voice fallback)`);
+          await axios.get(voiceUrl);
+          safeLogger.info('OTP sent via voice fallback', { mobile: maskMobile(mobile) });
         } catch (voiceError) {
-          console.error('Voice call also failed:', voiceError.message);
-          console.log('Both SMS and voice failed, but proceeding anyway');
+          safeLogger.error('Voice call also failed', voiceError);
           // Don't throw, just log and continue
         }
       }
     } else {
-      console.log(`No API key set. OTP for ${mobile}: ${otp} (use this for testing)`);
+      // Security: Only log masked mobile, never OTP
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[DEV] No API key set. OTP generated for ${maskMobile(mobile)}`);
+      }
     }
   }
 
@@ -81,30 +116,42 @@ const sendOTP = async (mobile) => {
 };
 
 const verifyOTP = async (mobile, otp) => {
-  console.log(`Verifying OTP for mobile: ${mobile}, OTP: ${otp}`);
+  // Security: Don't log actual OTP
+  safeLogger.info('Verifying OTP', { mobile: maskMobile(mobile) });
 
-  // In hardcoded OTP testing mode, accept the known OTP value regardless of store state
   // Canonicalize incoming mobile and prepare key variants
   const canon = normalizeMobile(mobile);
   if (!canon) {
-    console.log('Invalid mobile format');
+    safeLogger.warn('Invalid mobile format during OTP verification');
     return false;
   }
   const variants = [canon, '91' + canon];
 
+  // Security: Check attempt limits before verification
+  for (const key of variants) {
+    const rec = await otpStore.getOtp(key);
+    if (rec) {
+      const attemptResult = await otpStore.incrementAttempts(key);
+      if (attemptResult.locked) {
+        safeLogger.security('OTP_ATTEMPTS_EXCEEDED', { mobile: maskMobile(mobile) });
+        return false;
+      }
+      break;
+    }
+  }
+
   // If hardcoded OTP testing mode, accept the known OTP and mark the matched record used
   if (process.env.USE_HARDCODED_OTP === 'true' && otp === '123456') {
-    console.log('Hardcoded OTP accepted for testing');
+    safeLogger.info('Hardcoded OTP accepted for testing', { mobile: maskMobile(mobile) });
     for (const key of variants) {
       try {
         const rec = await otpStore.getOtp(key);
         if (rec) {
-          console.log(`Found OTP record for key ${key}, marking used`);
           await otpStore.markUsed(key);
           return true;
         }
       } catch (e) {
-        console.error('Error checking OTP store for key', key, e);
+        safeLogger.error('Error checking OTP store for key', e);
       }
     }
     // Not found in store, but still allow hardcoded OTP for testing
@@ -123,41 +170,43 @@ const verifyOTP = async (mobile, otp) => {
         break;
       }
     } catch (e) {
-      console.error('Error reading OTP store for key', key, e);
+      safeLogger.error('Error reading OTP store for key', e);
     }
   }
 
-  console.log('Stored data:', stored ? { expiry: stored.expiry, usedAt: stored.usedAt, hasData: true, key: matchedKey } : 'not found');
   if (!stored) {
-    console.log('OTP not found in store');
+    safeLogger.info('OTP not found in store', { mobile: maskMobile(mobile) });
     return false;
   }
 
   if (Date.now() > stored.expiry) {
-    console.log('OTP expired');
+    safeLogger.info('OTP expired', { mobile: maskMobile(mobile) });
     if (matchedKey) await otpStore.deleteOtp(matchedKey);
     return false;
   }
 
-  // If already used, allow for 1 minute after first use
+  // If already used, allow for 1 minute after first use (grace period)
   if (stored.usedAt) {
-    if (Date.now() - stored.usedAt < 60000) {
-      console.log('OTP already used but within grace period');
+    if (Date.now() - stored.usedAt < securityConfig.OTP.GRACE_PERIOD_AFTER_USE_MS) {
+      safeLogger.info('OTP already used but within grace period', { mobile: maskMobile(mobile) });
       return true;
     } else {
-      console.log('OTP used and grace period expired');
+      safeLogger.info('OTP used and grace period expired', { mobile: maskMobile(mobile) });
       if (matchedKey) await otpStore.deleteOtp(matchedKey);
       return false;
     }
   }
 
   const isValid = await bcrypt.compare(otp, stored.hashedOtp);
-  console.log('OTP valid:', isValid);
   if (isValid && matchedKey) {
+    safeLogger.info('OTP verified successfully', { mobile: maskMobile(mobile) });
     await otpStore.markUsed(matchedKey);
-    // Keep record for grace window
+    // Security: Delete OTP after successful use to prevent reuse
+    // Keep record for grace window instead of immediate deletion
+  } else {
+    safeLogger.info('OTP verification failed', { mobile: maskMobile(mobile) });
   }
   return isValid;
 };
 
-module.exports = { sendOTP, verifyOTP };
+module.exports = { sendOTP, verifyOTP, normalizeMobile, maskMobile };

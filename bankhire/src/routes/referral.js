@@ -1,28 +1,84 @@
+/**
+ * REFERRAL ROUTES
+ * Enhanced with security: role enforcement, input validation, fraud detection, audit logging
+ * 
+ * Security: Candidates cannot access referral APIs, rate limiting applied
+ */
+
 const express = require('express');
 const { createReferral, getMyReferrals, markReferralJoined, getMyEarnings, withdrawReferral, rejectReferral, getReferralById } = require('../controllers/referralController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 
+// Security middleware
+const { authorize } = require('../middlewares/authorizeMiddleware');
+const { validateReferralCreate, validateIdParam } = require('../middlewares/validationMiddleware');
+const { secureResumeUpload, validateUploadedFile, handleUploadError } = require('../middlewares/fileUploadMiddleware');
+const securityConfig = require('../config/security');
+
 const router = express.Router();
 
-const multer = require('multer');
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname),
-});
-const upload = multer({ storage });
+// ======================
+// EMPLOYEE-ONLY ROUTES
+// ======================
 
-// Accept multipart/form-data with optional resume file. Role: EMPLOYEE
-router.post('/create', authMiddleware, roleMiddleware(['EMPLOYEE']), upload.single('resume'), createReferral);
-router.get('/my-referrals', authMiddleware, roleMiddleware(['EMPLOYEE']), getMyReferrals);
-router.get('/my-earnings', authMiddleware, roleMiddleware(['EMPLOYEE']), getMyEarnings);
-// Get referral by id (employee can view their own referral)
-router.get('/:id', authMiddleware, roleMiddleware(['EMPLOYEE']), getReferralById);
-router.post('/:id/mark-joined', authMiddleware, roleMiddleware(['ADMIN']), markReferralJoined);
+// Create referral - EMPLOYEE only, with secure file upload and fraud tracking
+router.post('/create', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.EMPLOYEE]),   // Security: Only employees can refer
+  secureResumeUpload.single('resume'),           // Security: Secure file handling
+  handleUploadError,
+  validateUploadedFile,                           // Security: Validate file signature
+  validateReferralCreate,                         // Security: Input validation
+  createReferral
+);
 
-// Withdraw a referral (employee who created it)
-router.post('/withdraw', authMiddleware, roleMiddleware(['EMPLOYEE']), withdrawReferral);
-// HR/Admin reject a referral
-router.post('/reject', authMiddleware, roleMiddleware(['ADMIN','MANAGER']), rejectReferral);
+// Get my referrals - EMPLOYEE only
+router.get('/my-referrals', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.EMPLOYEE]),   // Security: Role enforcement
+  getMyReferrals
+);
+
+// Get my earnings - EMPLOYEE only
+router.get('/my-earnings', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.EMPLOYEE]),   // Security: Role enforcement
+  getMyEarnings
+);
+
+// Get referral by id - EMPLOYEE can view their own referral
+router.get('/:id', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.EMPLOYEE, securityConfig.ROLES.ADMIN]),
+  validateIdParam,                               // Security: Validate ID parameter
+  getReferralById
+);
+
+// Withdraw a referral - EMPLOYEE who created it
+router.post('/withdraw', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.EMPLOYEE]),
+  withdrawReferral
+);
+
+// ======================
+// ADMIN/MANAGER ROUTES
+// ======================
+
+// Mark referral as joined - ADMIN only
+router.post('/:id/mark-joined', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.ADMIN]),      // Security: Admin-only action
+  validateIdParam,
+  markReferralJoined
+);
+
+// Reject a referral - ADMIN/MANAGER
+router.post('/reject', 
+  authMiddleware, 
+  authorize([securityConfig.ROLES.ADMIN, securityConfig.ROLES.MANAGER]),
+  rejectReferral
+);
 
 module.exports = router;

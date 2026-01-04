@@ -1,0 +1,356 @@
+# ==============================================================================
+# BankHire CI Pipeline
+# ==============================================================================
+# This workflow ensures code quality and prevents regressions.
+# 
+# Triggers:
+# - On every push to main branch
+# - On every pull request targeting main
+#
+# Requirements:
+# - All tests must pass
+# - No critical security vulnerabilities
+# - Pipeline fails on ANY error
+# ==============================================================================
+
+name: BankHire CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Ensure only one CI run per branch at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ============================================================================
+  # BACKEND TESTS
+  # ============================================================================
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bankhire_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: bankhire
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: bankhire/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create test environment file
+        run: |
+          cat > .env.test << EOF
+          NODE_ENV=test
+          PORT=3002
+          DB_HOST=localhost
+          DB_PORT=5432
+          DB_USER=postgres
+          DB_PASSWORD=postgres
+          DB_NAME=bankhire_test
+          JWT_SECRET=ci-test-jwt-secret-key-for-github-actions
+          OTP_EXPIRY_MINUTES=10
+          USE_HARDCODED_OTP=true
+          HARDCODED_OTP=123456
+          UPLOAD_DIR=./uploads
+          MAX_FILE_SIZE=26214400
+          EOF
+
+      - name: Create uploads directory
+        run: mkdir -p uploads
+
+      - name: Run ALL backend tests
+        run: npm run test:ci
+        env:
+          NODE_ENV: test
+
+      - name: Verify test exit code
+        if: failure()
+        run: |
+          echo "❌ BACKEND TESTS FAILED"
+          echo "Pipeline will fail - broken code cannot be merged"
+          exit 1
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage-report
+          path: bankhire/coverage/
+          retention-days: 7
+
+  # ============================================================================
+  # FRONTEND E2E TESTS
+  # ============================================================================
+  frontend-tests:
+    name: Frontend E2E Tests
+    runs-on: ubuntu-latest
+    needs: backend-tests
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bankhire_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: |
+            bankhire/package-lock.json
+            bankhire-web/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: bankhire
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: bankhire-web
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: bankhire-web
+        run: npx playwright install chromium --with-deps
+
+      - name: Create backend environment file
+        working-directory: bankhire
+        run: |
+          cat > .env << EOF
+          NODE_ENV=test
+          PORT=3002
+          DB_HOST=localhost
+          DB_PORT=5432
+          DB_USER=postgres
+          DB_PASSWORD=postgres
+          DB_NAME=bankhire_test
+          JWT_SECRET=ci-test-jwt-secret-key-for-github-actions
+          OTP_EXPIRY_MINUTES=10
+          USE_HARDCODED_OTP=true
+          HARDCODED_OTP=123456
+          UPLOAD_DIR=./uploads
+          MAX_FILE_SIZE=26214400
+          EOF
+
+      - name: Create uploads directory
+        working-directory: bankhire
+        run: mkdir -p uploads
+
+      - name: Seed database
+        working-directory: bankhire
+        run: node seed.js
+        env:
+          NODE_ENV: test
+
+      - name: Start backend server
+        working-directory: bankhire
+        run: |
+          npm start &
+          echo "Waiting for backend to start..."
+          for i in {1..30}; do
+            curl -s http://localhost:3002/health && echo " Backend ready!" && break
+            echo "Attempt $i: Backend not ready yet..."
+            sleep 2
+          done
+        env:
+          NODE_ENV: test
+          PORT: 3002
+
+      - name: Build frontend
+        working-directory: bankhire-web
+        run: npm run build
+        env:
+          CI: true
+          REACT_APP_API_URL: http://localhost:3002
+
+      - name: Start frontend server
+        working-directory: bankhire-web
+        run: |
+          npx serve -s build -l 3000 &
+          echo "Waiting for frontend to start..."
+          for i in {1..15}; do
+            curl -s http://localhost:3000 && echo " Frontend ready!" && break
+            echo "Attempt $i: Frontend not ready yet..."
+            sleep 2
+          done
+
+      - name: Run Playwright E2E tests
+        working-directory: bankhire-web
+        run: npm run test:e2e
+        env:
+          CI: true
+          TEST_BASE_URL: http://localhost:3000
+
+      - name: Verify E2E test exit code
+        if: failure()
+        run: |
+          echo "❌ FRONTEND E2E TESTS FAILED"
+          echo "Pipeline will fail - broken code cannot be merged"
+          exit 1
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: bankhire-web/test-results/
+          retention-days: 7
+
+  # ============================================================================
+  # SECURITY & QUALITY CHECKS
+  # ============================================================================
+  security-check:
+    name: Security & Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install backend dependencies
+        working-directory: bankhire
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: bankhire-web
+        run: npm ci
+
+      # Backend security audit
+      - name: Backend - Check for critical vulnerabilities
+        working-directory: bankhire
+        run: |
+          echo "🔒 Checking backend for security vulnerabilities..."
+          npm audit --audit-level=critical
+          echo "✅ No critical vulnerabilities found in backend"
+
+      # Frontend security audit
+      - name: Frontend - Check for critical vulnerabilities
+        working-directory: bankhire-web
+        run: |
+          echo "🔒 Checking frontend for security vulnerabilities..."
+          npm audit --audit-level=critical
+          echo "✅ No critical vulnerabilities found in frontend"
+
+      # ESLint for frontend (React has eslint configured)
+      - name: Frontend - Run ESLint
+        working-directory: bankhire-web
+        run: |
+          echo "🔍 Running ESLint on frontend..."
+          npx eslint src/ --max-warnings 0 || {
+            echo "❌ ESLint found errors"
+            exit 1
+          }
+          echo "✅ ESLint passed"
+
+  # ============================================================================
+  # BUILD VERIFICATION
+  # ============================================================================
+  build-check:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests, security-check]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Build frontend for production
+        working-directory: bankhire-web
+        run: |
+          npm ci
+          npm run build
+          echo "✅ Frontend build successful"
+
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: bankhire-web/build/
+          retention-days: 7
+
+  # ============================================================================
+  # FINAL STATUS CHECK
+  # ============================================================================
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests, security-check, build-check]
+    if: always()
+
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.backend-tests.result }}" != "success" ]; then
+            echo "❌ Backend tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.frontend-tests.result }}" != "success" ]; then
+            echo "❌ Frontend tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.security-check.result }}" != "success" ]; then
+            echo "❌ Security checks failed"
+            exit 1
+          fi
+          if [ "${{ needs.build-check.result }}" != "success" ]; then
+            echo "❌ Build check failed"
+            exit 1
+          fi
+          echo "✅ All CI checks passed!"
+          echo "🎉 Code is safe to merge"

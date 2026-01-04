@@ -1,9 +1,19 @@
+/**
+ * REFERRAL CONTROLLER
+ * Enhanced with security: fraud detection, audit logging, safe logging
+ */
+
 const Referral = require('../models/Referral');
 const Earning = require('../models/Earning');
 const User = require('../models/User');
 const AppSetting = require('../models/AppSetting');
 const ReferralRewardConfig = require('../models/ReferralRewardConfig');
 const Job = require('../models/Job');
+
+// Security imports
+const safeLogger = require('../utils/safeLogger');
+const auditService = require('../services/auditService');
+const fraudDetectionService = require('../services/fraudDetectionService');
 
 // Helper: get app settings (first row or defaults)
 const getAppSettings = async () => {
@@ -14,10 +24,16 @@ const getAppSettings = async () => {
 const createReferral = async (req, res) => {
   const { candidateMobile, jobId } = req.body;
   if (!candidateMobile || !jobId) {
-    return res.status(400).json({ error: 'Candidate mobile and job ID required' });
+    return res.status(400).json({ error: 'Candidate mobile and job ID required', requestId: req.requestId });
   }
 
   try {
+    // Security: Track referral submission for fraud detection
+    const isFlagged = fraudDetectionService.trackReferralSubmission(req.user.id, req);
+    if (isFlagged) {
+      safeLogger.security('EXCESSIVE_REFERRALS_FLAG', { userId: req.user.id }, req);
+    }
+
     // Enforce referral limits
     const settings = await getAppSettings();
     const startOfDay = new Date();
@@ -26,11 +42,11 @@ const createReferral = async (req, res) => {
 
     const dayCount = await Referral.count({ where: { referrerId: req.user.id, createdAt: { [require('sequelize').Op.gte]: startOfDay } } });
     if (settings.maxReferralsPerDay && dayCount >= settings.maxReferralsPerDay) {
-      return res.status(400).json({ error: `Daily referral limit reached (${settings.maxReferralsPerDay})` });
+      return res.status(400).json({ error: `Daily referral limit reached (${settings.maxReferralsPerDay})`, requestId: req.requestId });
     }
     const monthCount = await Referral.count({ where: { referrerId: req.user.id, createdAt: { [require('sequelize').Op.gte]: startOfMonth } } });
     if (settings.maxReferralsPerMonth && monthCount >= settings.maxReferralsPerMonth) {
-      return res.status(400).json({ error: `Monthly referral limit reached (${settings.maxReferralsPerMonth})` });
+      return res.status(400).json({ error: `Monthly referral limit reached (${settings.maxReferralsPerMonth})`, requestId: req.requestId });
     }
 
     const { Op } = require('sequelize');
@@ -40,7 +56,12 @@ const createReferral = async (req, res) => {
     const candidateEmail = req.body.candidateEmail || null;
     const resumeFile = req.file || null; // multer
 
-    // Check for existing active referral for same candidate+job
+    // Security: Check for duplicate resume upload
+    if (resumeFile && resumeFile.hash) {
+      await fraudDetectionService.checkDuplicateResume(resumeFile.hash, req.user.id, req);
+    }
+
+    // Check for existing active referral for same candidate+job (duplicate prevention)
     const existingActive = await Referral.findOne({
       where: { candidateMobile, jobId, status: { [Op.in]: ['REFERRED','APPLIED'] } },
     });
@@ -65,12 +86,20 @@ const createReferral = async (req, res) => {
 
     const referral = await Referral.create(referralData);
 
+    // Security: Audit log referral creation
+    auditService.createAuditRecord(auditService.AUDIT_EVENTS.REFERRAL_CREATED, {
+      referralId: referral.id,
+      jobId,
+      // Don't log candidate mobile - sensitive
+    }, req);
+
     if (existingActive) {
       referral.status = 'REJECTED';
       referral.rejectionReason = 'Already referred';
       referral.rejectedBy = 'SYSTEM';
       await referral.save();
-      return res.status(201).json({ message: 'Referral auto-rejected (already referred)', referral });
+      auditService.logReferralStatusChange(referral.id, 'REFERRED', 'REJECTED', 'Duplicate referral', req);
+      return res.status(201).json({ message: 'Referral auto-rejected (already referred)', referral, requestId: req.requestId });
     }
 
     // If candidate user exists, update resume fields when a file was uploaded
@@ -84,7 +113,7 @@ const createReferral = async (req, res) => {
         await candidateUser.save();
       }
     }catch(e){
-      console.error('Failed to create/update candidate user record', e);
+      safeLogger.error('Failed to create/update candidate user record', e, req);
       // non-fatal — don't block referral creation
     }
 

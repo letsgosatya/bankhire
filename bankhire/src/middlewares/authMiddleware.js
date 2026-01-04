@@ -1,9 +1,21 @@
 const jwt = require('jsonwebtoken');
 
+// Helper to drain request body before sending response
+// This prevents ECONNRESET on multipart uploads when auth fails
+const sendWithDrain = (req, res, status, body) => {
+  if (req.readable && !req.readableEnded) {
+    req.resume();
+    req.on('end', () => res.status(status).json(body));
+    req.on('error', () => res.status(status).json(body));
+  } else {
+    res.status(status).json(body);
+  }
+};
+
 const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
-    return res.status(401).json({ error: 'Access denied. No token provided.' });
+    return sendWithDrain(req, res, 401, { error: 'Access denied. No token provided.' });
   }
 
   try {
@@ -11,7 +23,8 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(400).json({ error: 'Invalid token.' });
+    // All token errors (invalid, expired, malformed) should return 401
+    sendWithDrain(req, res, 401, { error: 'Invalid or expired token.' });
   }
 };
 

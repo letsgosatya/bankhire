@@ -77,8 +77,7 @@ const getReferrals = async (req, res) => {
     const page = parseInt(req.query.page || '1', 10) || 1;
     const size = Math.min(100, Math.max(1, parseInt(req.query.size || '20', 10)));
     const result = await getReferralsSvc({ where, page, size });
-    // normalize items to JSON
-    result.items = result.items.map(i => i.toJSON());
+    // Items are already plain objects from service, no need to call toJSON
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -130,7 +129,7 @@ const getExpiredReferrals = async (req, res) => {
     const page = parseInt(req.query.page || '1', 10) || 1;
     const size = Math.min(100, Math.max(1, parseInt(req.query.size || '20', 10)));
     const result = await getReferralsSvc({ where: { status: 'EXPIRED' }, page, size });
-    result.items = result.items.map(i => i.toJSON());
+    // Items are already plain objects from service, no need to call toJSON
     res.json(result);
   } catch (err) {
     console.error(err);
