@@ -29,8 +29,13 @@ Start-Process -FilePath "powershell.exe" -ArgumentList "-Command cd 'C:\Satya_Re
 Write-Host "Waiting 3 seconds for web to initialize..." -ForegroundColor Yellow
 Start-Sleep -Seconds 3
 
-Write-Host "Starting BankHire Mobile App (Expo)..." -ForegroundColor Green
-Start-Process -FilePath "powershell.exe" -ArgumentList "-Command cd 'C:\Satya_RealtimeProjects\BankHire\bankhire-mobile'; npx expo start --web --port 8081" -NoNewWindow
+Write-Host "Starting BankHire Mobile App (Expo) in LAN mode..." -ForegroundColor Green
+# Detect a sensible LAN IP for the machine to let devices connect directly
+$ip = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -notlike '169.*' -and $_.IPAddress -ne '127.0.0.1' -and $_.AddressState -eq 'Preferred'} | Select-Object -First 1 -ExpandProperty IPAddress) -join ''
+if (-not $ip) { $ip = '127.0.0.1' }
+Write-Host "Detected host IP: $ip" -ForegroundColor Yellow
+# Start Expo in LAN mode and export DEV_API_HOST env var for convenience
+Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -Command cd 'C:\Satya_RealtimeProjects\BankHire\bankhire-mobile'; $env:DEV_API_HOST='$ip'; npx expo start --lan --port 8081" -NoNewWindow -WorkingDirectory "C:\Satya_RealtimeProjects\BankHire\bankhire-mobile"
 
 Write-Host "All services started! Check terminals for status." -ForegroundColor Cyan
 Write-Host "Backend: http://localhost:3002" -ForegroundColor White

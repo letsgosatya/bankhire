@@ -32,4 +32,28 @@ Installing packages. This might take a couple of minutes.
 Installing react, react-dom, and react-scripts with cra-template-typescript..
 
 
+security commands:
+
+cd "c:\Satya_RealtimeProjects\BankHire\bankhire"; npm install helmet express-rate-limit express-validator uuid --save --no-audit --no-fund
+
+cd "c:\Satya_RealtimeProjects\BankHire\bankhire-web"; npm install --save-dev @playwright/test
+
+npx playwright install chromium
+
+test : 
+cd "c:\Satya_RealtimeProjects\BankHire\bankhire"; npm test -- --listTests
+
+All test files are recognized. Let me run a quick test to ensure the configuration is correct:
+
+npm run test:auth -- --testTimeout=60000
+
+The transformIgnorePatterns approach won't work since uuid is ESM and we need CommonJS. Let me install babel to handle the transformation:
+
+npm install --save-dev @babel/core @babel/preset-env babel-jest
+
+npm run test:auth -- --testTimeout=60000
+
+
+
+
 

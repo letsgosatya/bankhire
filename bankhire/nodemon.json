@@ -1,0 +1,15 @@
+{
+  "watch": ["src"],
+  "ext": "js,json",
+  "ignore": [
+    "logs/*",
+    "data/*",
+    "uploads/*",
+    "*.log",
+    "node_modules/*",
+    ".env",
+    ".vscode/*",
+    "tools/*"
+  ],
+  "delay": 250
+}

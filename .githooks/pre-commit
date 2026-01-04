@@ -1,0 +1,21 @@
+#!/bin/sh
+# Pre-commit hook for BankHire
+# Runs tests before allowing commit
+
+echo "🔍 Running pre-commit checks..."
+
+# Navigate to backend directory
+cd bankhire
+
+# Run backend tests
+echo "🧪 Running backend tests..."
+npm run test:ci 2>&1
+
+if [ $? -ne 0 ]; then
+  echo "❌ Backend tests failed! Commit aborted."
+  echo "   Fix the failing tests before committing."
+  exit 1
+fi
+
+echo "✅ All tests passed! Proceeding with commit."
+exit 0
