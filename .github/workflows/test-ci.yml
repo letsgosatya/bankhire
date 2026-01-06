@@ -1,0 +1,34 @@
+# ==============================================================================
+# BankHire CI Pipeline - TEST VERSION
+# ==============================================================================
+# Simplified workflow to test if GitHub Actions is working
+#
+# Triggers:
+# - On every push to main branch
+# - On every pull request targeting main
+# ==============================================================================
+
+name: BankHire CI Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-workflow:
+    name: Test Workflow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test CI trigger
+        run: |
+          echo "✅ CI workflow triggered successfully!"
+          echo "🎉 GitHub Actions is working!"
+          echo "PR: ${{ github.event.pull_request.html_url }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
