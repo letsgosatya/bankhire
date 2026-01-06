@@ -8,6 +8,7 @@
     "dev": "nodemon src/app.js",
     "setup-db": "node setup-db.js",
     "setup-test-db": "node setup-test-db.js",
+    "setup-db-schema": "node -e \"require('dotenv').config({path:'.env.test'}); const {sequelize} = require('./src/config/database'); sequelize.sync({force: true}).then(() => { console.log('Database schema created'); process.exit(0); }).catch(err => { console.error('Schema creation failed:', err); process.exit(1); })\"",
     "test": "cross-env NODE_ENV=test jest --runInBand --forceExit",
     "test:watch": "cross-env NODE_ENV=test jest --watch --runInBand",
     "test:coverage": "cross-env NODE_ENV=test jest --runInBand --forceExit --coverage",

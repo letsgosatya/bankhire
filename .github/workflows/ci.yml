@@ -91,6 +91,11 @@ jobs:
       - name: Create uploads directory
         run: mkdir -p uploads
 
+      - name: Setup database tables
+        run: npm run setup-db-schema
+        env:
+          NODE_ENV: test
+
       - name: Run ALL backend tests
         run: npm run test:ci
         env:
