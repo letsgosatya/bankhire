@@ -49,7 +49,9 @@ async function cleanDatabase() {
  */
 async function syncDatabase() {
   const { sequelize } = require('../../src/config/database');
-  await sequelize.sync({ force: false });
+  // Force sync in tests to ensure schema is created fresh for each
+  // Jest worker. This avoids race conditions when tests run in parallel.
+  await sequelize.sync({ force: true });
 }
 
 /**
