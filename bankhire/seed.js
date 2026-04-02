@@ -5,6 +5,8 @@ const Job = require('./src/models/Job');
 const Application = require('./src/models/Application');
 const Referral = require('./src/models/Referral');
 const Earning = require('./src/models/Earning');
+const AppSetting = require('./src/models/AppSetting');
+const ReferralRewardConfig = require('./src/models/ReferralRewardConfig');
 
 async function seedDatabase() {
   try {
@@ -533,11 +535,9 @@ async function seedDatabase() {
     }
 
     // Add default app settings
-    const AppSetting = require('./src/models/AppSetting');
     await AppSetting.create({ maxReferralsPerDay: 5, maxReferralsPerMonth: 50, defaultReferralExpiryDays: 30 });
 
     // Add sample referral reward configs
-    const ReferralRewardConfig = require('./src/models/ReferralRewardConfig');
     await ReferralRewardConfig.create({ bankName: 'State Bank of India', jobRole: 'Bank Manager', rewardAmount: 2000 });
     await ReferralRewardConfig.create({ bankName: 'HDFC Bank', jobRole: 'Loan Officer', rewardAmount: 1500 });
 
